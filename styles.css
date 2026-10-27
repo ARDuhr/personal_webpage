@@ -1,0 +1,46 @@
+:root { --black: #090909; --ink: #171717; --grey: #767676; --off-white: #f6f6f3; }
+* { box-sizing: border-box; }
+html { background: var(--off-white); }
+body { margin: 0; color: var(--ink); background: var(--off-white); font-family: Inter, Arial, sans-serif; }
+button, a { font: inherit; }
+.page-shell { max-width: 1440px; min-height: 100vh; margin: auto; padding: 24px 4vw; }
+.site-header, footer { display: flex; align-items: baseline; justify-content: space-between; }
+.site-header { padding-bottom: 48px; border-bottom: 1px solid var(--ink); }
+.wordmark { color: inherit; font-family: "Archivo Black", Impact, sans-serif; font-size: 1.15rem; letter-spacing: -.06em; text-decoration: none; }
+.header-note, .eyebrow, .project-number, footer, .source, .modal-eyebrow { font-family: "DM Mono", monospace; font-size: .75rem; letter-spacing: .055em; }
+.header-note { margin: 0; color: var(--grey); }
+.intro { max-width: 800px; padding: clamp(72px, 12vw, 170px) 0 clamp(56px, 8vw, 110px); }
+.eyebrow { display: block; margin: 0 0 16px; color: var(--grey); font-weight: 500; }
+h1, h2 { margin: 0; font-family: "Archivo Black", Impact, sans-serif; letter-spacing: -.06em; line-height: .94; }
+h1 { font-size: clamp(3.25rem, 8.7vw, 8.5rem); }
+.projects { border-top: 1px solid var(--ink); }
+.project-card { position: relative; display: grid; grid-template-columns: 62px 1fr 36px; gap: 14px; width: 100%; min-height: 176px; padding: 29px 0; border: 0; border-bottom: 1px solid var(--ink); color: inherit; background: transparent; text-align: left; }
+.project-card--button { cursor: pointer; }
+.project-number { color: var(--grey); }
+.project-content { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.project-card h2, .project-title { display: block; max-width: 1000px; font-family: "Archivo Black", Impact, sans-serif; font-size: clamp(2rem, 4.7vw, 4.75rem); letter-spacing: -.055em; line-height: .96; }
+.arrow { align-self: end; font-size: 2rem; line-height: 1; transition: transform 160ms ease; }
+.project-card--button:hover .arrow, .project-card--button:focus-visible .arrow { transform: translate(5px, -5px); }
+.project-card--button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+.project-card--placeholder { color: #8c8c8c; }
+.project-card--placeholder .eyebrow { color: #999; }
+footer { padding: 20px 0 0; color: var(--grey); }
+.modal { width: min(100vw - 52px, 1028px); margin: auto; padding: clamp(34px, 5vw, 54px); border: 0; color: #f7f7f7; background: var(--black); box-shadow: 0 0 0 1px #000; }
+.modal::backdrop { background: rgb(0 0 0 / .55); }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.modal h2 { font-size: clamp(2.1rem, 5vw, 4.2rem); }
+.close-button { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; padding: 0; border: 3px solid #a6a6a6; color: #a6a6a6; background: transparent; font-family: Arial, sans-serif; font-size: 2.5rem; line-height: .5; cursor: pointer; }
+.close-button:hover, .close-button:focus-visible { color: white; border-color: white; }
+.modal-eyebrow { margin: 22px 0 50px; color: #aaa; font-size: 1.25rem; }
+.thesis-list { display: grid; gap: 24px; }
+.thesis-card { position: relative; display: flex; flex-direction: column; gap: 14px; min-height: 156px; padding: 34px 32px; border: 2px solid #575757; color: inherit; text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
+.thesis-card:hover, .thesis-card:focus-visible { border-color: #fff; background: #161616; }
+.source { color: #aaa; font-size: 1.15rem; }
+.thesis-card strong { font-family: "Archivo Black", Impact, sans-serif; font-size: clamp(1.7rem, 3.8vw, 3.35rem); letter-spacing: -.055em; line-height: 1; }
+.thesis-arrow { position: absolute; top: 50%; right: 32px; color: #aaa; font-size: 2.25rem; transform: translateY(-50%); }
+.custom-cursor { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  body, body * { cursor: none !important; }
+  .custom-cursor { position: fixed; z-index: 1000; display: block; width: 20px; height: 20px; top: 0; left: 0; background: #fff; mix-blend-mode: difference; pointer-events: none; transform: translate(-50%, -50%); }
+}
+@media (max-width: 600px) { .page-shell { padding: 18px 20px; } .site-header { padding-bottom: 28px; } .header-note { display: none; } .project-card { grid-template-columns: 34px 1fr 25px; min-height: 145px; } .project-card h2, .project-title { font-size: 2rem; } .arrow { font-size: 1.5rem; } .modal { width: calc(100vw - 28px); padding: 28px 20px; } .modal-eyebrow { margin-bottom: 30px; } .thesis-card { min-height: 130px; padding: 24px 18px; } .source { font-size: .85rem; } .thesis-arrow { right: 18px; } }
