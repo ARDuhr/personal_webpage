@@ -1,4 +1,4 @@
-const snapshotUrl = 'data/demand-dashboard.json';
+const snapshotUrl = 'data/demand-dashboard.json?v=48h-timestamp';
 const chart = document.querySelector('#demand-chart');
 const statusText = document.querySelector('#chart-status');
 const modelChoices = document.querySelector('#demand-model-choices');
