@@ -20,6 +20,12 @@ function formatDate(value) {
   return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(value);
 }
 
+function formatTimestamp(value) {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC'
+  }).format(value).replace(',', ' ·');
+}
+
 function formatModelName(name) {
   return name.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
@@ -34,21 +40,23 @@ function drawChart() {
   const allActuals = buildActuals(dashboard.actuals);
   const availableForecasts = Object.values(dashboard.forecasts).flat().map((point) => ({ timestamp: new Date(point.timestamp), value: point.load_mw }));
   const forecastEnd = Math.max(...availableForecasts.map((point) => point.timestamp.getTime()));
-  const viewWindow = 24 * 60 * 60 * 1000;
-  const viewStart = forecastEnd - viewWindow;
+  const actualEnd = allActuals.at(-1).timestamp.getTime();
+  const halfWindow = 24 * 60 * 60 * 1000;
+  const viewStart = actualEnd - halfWindow;
+  const viewEnd = actualEnd + halfWindow;
   const actuals = Number.isFinite(forecastEnd)
-    ? allActuals.filter((point) => point.timestamp.getTime() >= viewStart && point.timestamp.getTime() <= forecastEnd)
+    ? allActuals.filter((point) => point.timestamp.getTime() >= viewStart && point.timestamp.getTime() <= viewEnd)
     : allActuals;
   const actualSampleEvery = Math.max(1, Math.ceil(actuals.length / 1200));
   const visibleActuals = actuals.filter((_, index) => index % actualSampleEvery === 0 || index === actuals.length - 1);
   const selected = [...modelChoices.querySelectorAll('input:checked')].map((input) => input.value);
   const series = selected.map((name) => ({ name, points: dashboard.forecasts[name]
     .map((point) => ({ timestamp: new Date(point.timestamp), value: point.load_mw }))
-    .filter((point) => point.timestamp.getTime() >= viewStart && point.timestamp.getTime() <= forecastEnd) }));
+    .filter((point) => point.timestamp.getTime() >= viewStart && point.timestamp.getTime() <= viewEnd) }));
   const allPoints = [...visibleActuals, ...series.flatMap((item) => item.points)];
   const values = allPoints.map((point) => point.value).filter(Number.isFinite);
-  const minTime = Math.min(...allPoints.map((point) => point.timestamp.getTime()));
-  const maxTime = Math.max(...allPoints.map((point) => point.timestamp.getTime()));
+  const minTime = Number.isFinite(forecastEnd) ? viewStart : Math.min(...allPoints.map((point) => point.timestamp.getTime()));
+  const maxTime = Number.isFinite(forecastEnd) ? viewEnd : Math.max(...allPoints.map((point) => point.timestamp.getTime()));
   const rawMin = Math.min(...values);
   const rawMax = Math.max(...values);
   const range = Math.max(rawMax - rawMin, 1);
@@ -68,17 +76,17 @@ function drawChart() {
     label.textContent = `${Math.round(value / 1000)} GW`;
     chart.append(label);
   }
-  [0, .5, 1].forEach((position) => {
+  [0, .25, .5, .75, 1].forEach((position) => {
     const date = new Date(minTime + (maxTime - minTime) * position);
     const label = makeSvg('text', { x: x(date.getTime()), y: height - 13, fill: '#777', 'font-size': '9', 'font-family': 'DM Mono, monospace', 'text-anchor': position === 0 ? 'start' : position === 1 ? 'middle' : 'end' });
-    label.textContent = formatDate(date);
+    label.textContent = formatTimestamp(date);
     chart.append(label);
   });
   const pathFor = (points) => points.filter((point) => Number.isFinite(point.value)).map((point, index) => `${index ? 'L' : 'M'}${x(point.timestamp.getTime()).toFixed(2)},${y(point.value).toFixed(2)}`).join(' ');
   chart.append(makeSvg('path', { d: pathFor(visibleActuals), fill: 'none', stroke: '#111', 'stroke-width': '1.35', 'vector-effect': 'non-scaling-stroke' }));
   series.forEach((item, index) => chart.append(makeSvg('path', { d: pathFor(item.points), fill: 'none', stroke: palette[index % palette.length], 'stroke-width': '1.7', 'vector-effect': 'non-scaling-stroke' })));
 
-  if (Number.isFinite(forecastEnd)) dataWindow.textContent = `24H VIEW: ${formatDate(new Date(viewStart)).toUpperCase()} — ${formatDate(new Date(forecastEnd)).toUpperCase()}`;
+  if (Number.isFinite(forecastEnd)) dataWindow.textContent = `48H VIEW: ${formatTimestamp(new Date(viewStart)).toUpperCase()} — ${formatTimestamp(new Date(viewEnd)).toUpperCase()}`;
 
   legend.replaceChildren();
   addLegendItem('Actual demand', '#111');
