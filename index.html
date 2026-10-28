@@ -1,1 +1,75 @@
-m«ëˆ§½©buªàºg§¶)Ý{mšU,j›jÇºà7an{¦Š)ßŠW¨¢ë_ŠW›n·š‘ºÞjG§r‡^v‹­¦ën¦)í¢X§zÊ•éà¶î˜7]yÊy×œ¡×¢ž›­†¥¥Ø¬¦V²¶¬™ë,j¢Šzn¶)éº×â•ç^}«¥µú+²×bžŠ.¶›­¢ëiº×â•ç^}«¥µú+²×hº
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Arthur's project portfolio." />
+    <title>Arthur â€” Projects</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="custom-cursor" aria-hidden="true"></div>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="wordmark" href="./" aria-label="Arthur's project portfolio">ARTHUR</a>
+        <p class="header-note" id="updated-on">Updated on: â€”</p>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">PROJECTS</p>
+        <h1 id="page-title">Things Iâ€™m<br />working on.</h1>
+      </section>
+
+      <section class="projects" aria-label="Projects">
+        <a class="project-card project-card--link" href="power-market-model.html">
+          <div class="project-number">01</div>
+          <div class="project-content">
+            <p class="eyebrow">GERMANY / DEMAND FORECASTS</p>
+            <h2>Power Market Model</h2>
+          </div>
+          <span class="arrow" aria-hidden="true">â†—</span>
+        </a>
+        <article class="project-card project-card--placeholder">
+          <div class="project-number">02</div>
+          <div class="project-content">
+            <p class="eyebrow">IN DEVELOPMENT</p>
+            <h2>Renewables Energy Planner</h2>
+          </div>
+          <span class="arrow" aria-hidden="true">â†—</span>
+        </article>
+        <button class="project-card project-card--button" type="button" data-open-modal>
+          <span class="project-number">03</span>
+          <span class="project-content">
+            <span class="eyebrow">RESEARCH</span>
+            <span class="project-title">Young Arthurâ€™s Academic Contributions</span>
+          </span>
+          <span class="arrow" aria-hidden="true">â†—</span>
+        </button>
+      </section>
+
+      <footer><span>Â© 2026 ARTHUR</span><span>MORE TO COME</span></footer>
+    </main>
+
+    <dialog class="modal" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h2 id="modal-title">Academic Contributions?</h2>
+        <button class="close-button" type="button" aria-label="Close academic contributions" data-close-modal>Ã—</button>
+      </div>
+      <p class="modal-eyebrow">THESES</p>
+      <div class="thesis-list">
+        <a class="thesis-card" href="https://www.diva-portal.org/smash/record.jsf?pid=diva2%3A1793599&dswid=9475" target="_blank" rel="noreferrer">
+          <span class="source">DIVA PORTAL <span aria-hidden="true">â†—</span></span>
+          <strong>Master Thesis</strong><span class="thesis-arrow" aria-hidden="true">â†—</span>
+        </a>
+        <a class="thesis-card" href="https://epub.fir.de/frontdoor/index/index/year/2021/docId/441" target="_blank" rel="noreferrer">
+          <span class="source">FIR EPUB <span aria-hidden="true">â†—</span></span>
+          <strong>Bachelor Thesis</strong><span class="thesis-arrow" aria-hidden="true">â†—</span>
+        </a>
+      </div>
+    </dialog>
+    <script src="script.js"></script>
+  </body>
+</html>

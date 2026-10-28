@@ -1,1 +1,70 @@
-m«ëˆ§½©buªàºg§¶š0z¹š®G­š‡^–f•KæÚ±î¸Ø[é¢Šwâ•ê(º×â•æÛ­æ¤n·š‘éÜ¡×¢ëiºÛ©Š{h–)Ş²‡åzx-†{¦×^r‡^uç(uè§¦ëa…éiv+)•¬­†+&zËè¢›­Šznµø¥y×Ÿjém~ŠìµØ§¢‹­¦ëhºÚnµø¥y×Ÿjém~ŠìµÚ.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="German power market model dashboard." />
+    <title>Power Market Model â€” Arthur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="power-market-model.css" />
+  </head>
+  <body>
+    <div class="custom-cursor" aria-hidden="true"></div>
+    <main class="page-shell model-page">
+      <header class="site-header model-header">
+        <a class="back-link" href="./">â†&nbsp; Back to main page</a>
+        <p class="header-note" id="snapshot-updated">DATA UPDATED: â€”</p>
+      </header>
+
+      <section class="model-intro" aria-labelledby="page-title">
+        <p class="eyebrow">GERMANY / POWER MARKET MODEL</p>
+        <h1 id="page-title">Power market<br />overview.</h1>
+        <p class="model-description">Historic actuals and model forecasts. Select the forecasting models you want to compare.</p>
+      </section>
+
+      <section class="chart-grid" aria-label="Power market charts">
+        <article class="chart-panel chart-panel--wip">
+          <div class="chart-heading">
+            <p class="eyebrow">GERMANY / EUR PER MWH</p>
+            <h2>Power price</h2>
+          </div>
+          <div class="wip-state"><span>WIP</span><p>Price data and forecasting models are being connected.</p></div>
+          <div class="model-choices is-empty" aria-label="Power price forecasting models">No models available yet</div>
+        </article>
+
+        <article class="chart-panel chart-panel--wip">
+          <div class="chart-heading">
+            <p class="eyebrow">GERMANY / GW</p>
+            <h2>Power supply</h2>
+          </div>
+          <div class="wip-state"><span>WIP</span><p>Supply data and forecasting models are being connected.</p></div>
+          <div class="model-choices is-empty" aria-label="Power supply forecasting models">No models available yet</div>
+        </article>
+
+        <article class="chart-panel chart-panel--demand">
+          <div class="chart-heading">
+            <p class="eyebrow">GERMANY / GW</p>
+            <h2>Power demand</h2>
+          </div>
+          <div class="chart-wrap" id="demand-chart-wrap">
+            <div class="chart-loading" id="chart-status">Loading demand dataâ€¦</div>
+            <svg id="demand-chart" viewBox="0 0 640 320" role="img" aria-labelledby="demand-chart-title demand-chart-description" preserveAspectRatio="none">
+              <title id="demand-chart-title">German power demand</title>
+              <desc id="demand-chart-description">Actual demand and selected demand model forecasts.</desc>
+            </svg>
+          </div>
+          <div class="legend" id="demand-legend" aria-label="Demand chart legend"></div>
+          <fieldset class="model-choices" id="demand-model-choices">
+            <legend>FORECASTING MODELS</legend>
+          </fieldset>
+        </article>
+      </section>
+
+      <footer><span>Â© 2026 ARTHUR</span><span id="data-window">POWER MARKET MODEL</span></footer>
+    </main>
+    <script src="power-market-model.js"></script>
+  </body>
+</html>
