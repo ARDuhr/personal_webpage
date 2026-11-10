@@ -124,7 +124,7 @@ async function loadDashboard() {
     drawChart();
     statusText.classList.add('is-hidden');
     const updated = new Date(dashboard.generated_at);
-    updatedText.textContent = `DATA UPDATED: ${formatDate(updated).toUpperCase()}`;
+    updatedText.textContent = `LAST UPDATED: ${formatDate(updated).toUpperCase()}`;
   } catch (error) {
     statusText.textContent = `Data unavailable — ${error.message}`;
     console.error(error);

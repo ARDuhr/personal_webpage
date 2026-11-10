@@ -13,9 +13,9 @@ Object.assign(modalCursor.style, {
 });
 
 const lastUpdated = new Date(document.lastModified);
-updatedOn.textContent = `Updated on: ${lastUpdated.toLocaleDateString('en-US', {
-  month: 'long', day: 'numeric', year: 'numeric'
-})}`;
+updatedOn.textContent = `LAST UPDATED: ${new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit', month: 'short', year: 'numeric'
+}).format(lastUpdated).toUpperCase()}`;
 
 openModalButton.addEventListener('click', () => {
   modal.showModal();
