@@ -13,6 +13,7 @@ button, a { font: inherit; }
 .eyebrow { display: block; margin: 0 0 8px; color: var(--grey); font-weight: 500; }
 h1, h2 { margin: 0; font-family: "Archivo Black", Impact, sans-serif; letter-spacing: -.06em; line-height: .94; }
 h1 { font-size: clamp(3.25rem, 8.7vw, 8.5rem); }
+.intro h1 { font-size: clamp(2.5rem, 5.5vw, 5.25rem); }
 .projects { border-top: 1px solid var(--ink); }
 .project-card { position: relative; display: grid; grid-template-columns: 62px 1fr 36px; gap: 14px; width: 100%; min-height: 104px; padding: 14px 0; border: 0; border-bottom: 1px solid var(--ink); color: inherit; background: transparent; text-align: left; }
 .project-card--link, .project-card--link:visited, .project-card--link:hover, .project-card--link:focus-visible, .project-card--link * { text-decoration: none !important; }
