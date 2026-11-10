@@ -85,9 +85,13 @@
     return { points, nowIndex, lastBio };
   }
 
+  // The SVG is absolutely positioned inside .chart-wrap (see CSS), so drawing
+  // never changes the box it is measured from. clientWidth/Height exclude the border.
+  let lastSize = '';
   function size() {
-    const { width, height } = wrap.getBoundingClientRect();
+    const width = wrap.clientWidth, height = wrap.clientHeight;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    lastSize = `${width}x${height}`;
     return { width, height };
   }
 
@@ -235,6 +239,7 @@
     momentLabel.textContent = `${fmt(new Date(s.points[i].t))} UTC${s.points[i].actual ? '' : ' · FORECAST'}`;
   }
   function render() {
+    if (wrap.clientWidth < 80 || wrap.clientHeight < 80) return; // not laid out yet (e.g. hidden tab)
     tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.view === view)));
     panel.classList.toggle('is-merit', view === 'merit');
     (view === 'mix' ? drawMix : drawMerit)();
@@ -243,7 +248,7 @@
 
   tabs.forEach((t) => t.addEventListener('click', () => { view = t.dataset.view; tip.hidden = true; render(); }));
   slider.addEventListener('input', () => { select(Number(slider.value)); render(); });
-  new ResizeObserver(() => s && render()).observe(wrap);
+  new ResizeObserver(() => { if (s && `${wrap.clientWidth}x${wrap.clientHeight}` !== lastSize) render(); }).observe(wrap);
 
   fetch('data/demand-dashboard.json?v=48h-timestamp', { cache: 'no-cache' })
     .then((response) => { if (!response.ok) throw new Error(`Could not load data (${response.status})`); return response.json(); })
