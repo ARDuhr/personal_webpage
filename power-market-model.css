@@ -24,3 +24,19 @@
 .chart-grid + footer { padding-top: 12px; }
 @media (max-width: 960px) { .chart-grid { grid-template-columns: 1fr; } .chart-panel { min-height: 420px; } }
 @media (max-width: 600px) { .model-intro { padding-top: 20px; } .model-intro h1 { font-size: 3.25rem; } .chart-panel { min-height: 400px; padding: 14px; } .chart-wrap, .chart-wrap svg { min-height: 235px; } }
+.view-tabs { display: flex; margin: 0 0 10px; }
+.view-tabs button { flex: 1; padding: 7px 8px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-family: "DM Mono", monospace; font-size: .62rem; letter-spacing: .06em; }
+.view-tabs button + button { border-left: 0; }
+.view-tabs button[aria-pressed="true"] { background: var(--ink); color: var(--off-white); }
+.chart-tip { position: absolute; z-index: 2; min-width: 150px; padding: 8px 10px; border: 1px solid var(--ink); background: #fff; color: var(--ink); font-family: "DM Mono", monospace; font-size: .62rem; pointer-events: none; }
+.tip-head { margin-bottom: 6px; color: var(--grey); letter-spacing: .04em; }
+.tip-row { display: flex; align-items: center; gap: 6px; line-height: 1.6; }
+.tip-row b { margin-left: auto; padding-left: 12px; font-weight: 500; }
+.tip-total { margin-top: 4px; padding-top: 4px; border-top: 1px solid #d2d2ce; }
+.tip-foot { margin-top: 6px; color: var(--grey); }
+.swatch { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 2px; }
+.moment { display: none; align-items: center; gap: 10px; padding: 10px 0 0; font-family: "DM Mono", monospace; font-size: .62rem; letter-spacing: .04em; }
+.moment-label { flex: 0 0 auto; min-width: 150px; }
+.moment input { flex: 1; min-width: 0; accent-color: var(--ink); }
+#supply-panel.is-merit .moment { display: flex; }
+.supply-note { margin: 6px 0 0; color: var(--grey); font-family: "DM Mono", monospace; font-size: .58rem; letter-spacing: .05em; }

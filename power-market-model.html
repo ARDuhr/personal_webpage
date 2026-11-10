@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=2026-11-10" />
-    <link rel="stylesheet" href="power-market-model.css?v=2026-11-10" />
+    <link rel="stylesheet" href="styles.css?v=2026-11-10b" />
+    <link rel="stylesheet" href="power-market-model.css?v=2026-11-10b" />
   </head>
   <body>
     <div class="custom-cursor" aria-hidden="true"></div>
@@ -32,12 +32,26 @@
           <div class="wip-state"><span>WIP</span></div>
         </article>
 
-        <article class="chart-panel chart-panel--wip">
+        <article class="chart-panel" id="supply-panel">
           <div class="chart-heading">
             <p class="eyebrow">GERMANY / GW</p>
             <h2>Power supply</h2>
           </div>
-          <div class="wip-state"><span>WIP</span></div>
+          <div class="view-tabs" role="group" aria-label="Supply chart view">
+            <button type="button" data-view="mix" aria-pressed="true">MIX OVER TIME</button>
+            <button type="button" data-view="merit" aria-pressed="false">MERIT ORDER</button>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-loading">Loading supply data…</div>
+            <svg role="img" aria-label="German power generation by source and demand"></svg>
+            <div class="chart-tip" hidden></div>
+          </div>
+          <div class="moment">
+            <span class="moment-label">—</span>
+            <input type="range" min="0" value="0" aria-label="Moment shown in the merit order" />
+          </div>
+          <div class="legend" aria-label="Supply chart legend"></div>
+          <p class="supply-note"></p>
         </article>
 
         <article class="chart-panel chart-panel--demand">
@@ -61,6 +75,7 @@
 
       <footer><span>© 2026 ARTHUR</span><span id="data-window">POWER MARKET MODEL</span></footer>
     </main>
-    <script src="power-market-model.js?v=2026-11-10"></script>
+    <script src="power-market-model.js?v=2026-11-10b"></script>
+    <script src="power-market-model-supply.js?v=2026-11-10b"></script>
   </body>
 </html>
