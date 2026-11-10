@@ -5,7 +5,6 @@ const modelChoices = document.querySelector('#demand-model-choices');
 const legend = document.querySelector('#demand-legend');
 const updatedText = document.querySelector('#snapshot-updated');
 const dataWindow = document.querySelector('#data-window');
-const cursor = document.querySelector('.custom-cursor');
 const ns = 'http://www.w3.org/2000/svg';
 const palette = ['#d64027', '#1b69a5', '#6b3fa0', '#0c7d5a', '#a6611a'];
 let dashboard;
@@ -131,5 +130,4 @@ async function loadDashboard() {
   }
 }
 
-document.addEventListener('pointermove', (event) => { cursor.style.left = `${event.clientX}px`; cursor.style.top = `${event.clientY}px`; });
 loadDashboard();

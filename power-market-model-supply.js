@@ -115,7 +115,9 @@
       text(L - 6, y(v) + 3, `${v / 1000}`, { 'text-anchor': 'end' });
     }
     text(4, 10, 'GW', { 'font-size': 9 });
-    [[0, 'start'], [0.5, 'middle'], [1, 'end']].forEach(([f, anchor]) => {
+    // Three time labels need roughly 120px each; drop the middle one in narrow panels.
+    const ticks = width - L - R >= 380 ? [[0, 'start'], [0.5, 'middle'], [1, 'end']] : [[0, 'start'], [1, 'end']];
+    ticks.forEach(([f, anchor]) => {
       const i = Math.round(f * (n - 1)); text(x(i), height - 7, fmt(new Date(P[i].t)), { 'text-anchor': anchor });
     });
 

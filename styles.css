@@ -42,7 +42,7 @@ footer { padding: 12px 0 0; color: var(--grey); }
 .thesis-arrow { position: absolute; top: 50%; right: 32px; color: #aaa; font-size: 2.25rem; transform: translateY(-50%); }
 .custom-cursor { display: none; }
 @media (hover: hover) and (pointer: fine) {
-  body, body * { cursor: none !important; }
-  .custom-cursor { position: fixed; z-index: 1000; display: block; width: 20px; height: 20px; top: 0; left: 0; background: #fff; mix-blend-mode: difference; pointer-events: none; transform: translate(-50%, -50%); }
+  html.cursor-active, html.cursor-active * { cursor: none !important; }
+  html.cursor-active .custom-cursor { position: fixed; z-index: 1000; display: block; width: 20px; height: 20px; top: 0; left: 0; background: #fff; mix-blend-mode: difference; pointer-events: none; transform: translate(-50%, -50%); }
 }
 @media (max-width: 600px) { .page-shell { padding: 14px 16px; } .header-note { display: none; } .project-card { grid-template-columns: 34px 1fr 25px; min-height: 88px; } .project-card h2, .project-title { font-size: 2rem; } .arrow { font-size: 1.5rem; } .modal { width: calc(100vw - 28px); padding: 28px 20px; } .modal-eyebrow { margin-bottom: 18px; } .thesis-card { min-height: 104px; padding: 18px 16px; } .source { font-size: .85rem; } .thesis-arrow { right: 18px; } }
