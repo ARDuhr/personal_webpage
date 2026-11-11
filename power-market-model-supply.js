@@ -24,6 +24,13 @@
     { key: 'other', gw: 5, cost: 130 }, { key: 'other', gw: 3, cost: 185 },
   ];
   const STEP = 15 * 60 * 1000;
+  // RES SUPPLY view: total renewables (solar + wind + biomass & hydro).
+  const RES_SERIES = {
+    actual: { label: 'Actual', color: '#111', dash: 'none' },
+    level_seasonality_trend: { label: 'Level Seasonality Trend', color: '#d64027', dash: 'none' },
+    smard_day_ahead: { label: 'SMARD day-ahead', color: '#2a78d6', dash: '5 4' },
+  };
+  const resStyle = (key, i) => RES_SERIES[key] || { label: key.replaceAll('_', ' '), color: ['#6250d6', '#1baf7a'][i % 2], dash: 'none' };
 
   const panel = document.querySelector('#supply-panel');
   if (!panel) return;
@@ -78,11 +85,14 @@
         ? CATS.map((c) => ({ key: c.key, value: at(sup.actual_mw[c.key], t) }))
         : ['solar', 'wind', 'other_all'].map((k) => ({ key: k, value: at(sup.forecast_mw[k], t) }));
       const known = stack.every((p) => p.value != null) || (actual && stack.filter((p) => p.key !== 'net_imports').every((p) => p.value != null));
-      return { t, actual, demand, demandForecast: t > demandNow, stack: known ? stack.map((p) => ({ ...p, value: p.value ?? 0 })) : null };
+      const res = { actual: actual && sup.res ? at(sup.res.actual_mw, t) : null };
+      Object.entries(sup.res?.forecast_mw || {}).forEach(([key, values]) => { res[key] = at(values, t); });
+      return { t, actual, demand, demandForecast: t > demandNow, res, stack: known ? stack.map((p) => ({ ...p, value: p.value ?? 0 })) : null };
     });
     const lastBio = (() => { for (let t = actualEnd; t >= supStart; t -= STEP) { const v = at(sup.actual_mw.bio_hydro, t); if (v != null) return v; } return 0; })();
     const nowIndex = points.reduce((last, p, i) => (p.actual && p.stack ? i : last), 0);
-    return { points, nowIndex, lastBio };
+    const resKeys = ['actual', ...Object.keys(sup.res?.forecast_mw || {})];
+    return { points, nowIndex, lastBio, resKeys };
   }
 
   // The SVG is absolutely positioned inside .chart-wrap (see CSS), so drawing
@@ -218,8 +228,55 @@
     }
   }
 
+  function drawRes() {
+    const { width, height } = size();
+    const L = 34, R = 8, T = 20, B = 24, P = s.points, n = P.length;
+    const x = (i) => L + (i / (n - 1)) * (width - L - R);
+    const max = Math.max(10000, ...P.flatMap((p) => s.resKeys.map((k) => p.res[k] ?? 0)));
+    const top = Math.ceil(max / 10000) * 10000;
+    const y = (v) => T + (1 - v / top) * (height - T - B);
+    svg.replaceChildren();
+    for (let v = 0; v <= top; v += 10000) {
+      el('line', { x1: L, x2: width - R, y1: y(v), y2: y(v), stroke: v === 0 ? '#9a9a96' : '#e3e3df', 'stroke-width': 1 });
+      text(L - 6, y(v) + 3, `${v / 1000}`, { 'text-anchor': 'end' });
+    }
+    text(4, 10, 'GW', { 'font-size': 9 });
+    const ticks = width - L - R >= 380 ? [[0, 'start'], [0.5, 'middle'], [1, 'end']] : [[0, 'start'], [1, 'end']];
+    ticks.forEach(([f, anchor]) => { const i = Math.round(f * (n - 1)); text(x(i), height - 7, fmt(new Date(P[i].t)), { 'text-anchor': anchor }); });
+    el('line', { x1: x(s.nowIndex), x2: x(s.nowIndex), y1: T, y2: height - B, stroke: '#111', 'stroke-width': 1, 'stroke-dasharray': '2 3' });
+    text(x(s.nowIndex) + 4, T + 9, 'NOW', { fill: '#111', 'font-size': 9 });
+    // Forecasts first, actual on top.
+    [...s.resKeys.slice(1), 'actual'].forEach((key) => {
+      const style = resStyle(key, s.resKeys.indexOf(key));
+      const d = []; let pen = false;
+      P.forEach((p, i) => { const v = p.res[key]; if (v == null) { pen = false; return; } d.push(`${pen ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`); pen = true; });
+      el('path', { d: d.join(' '), fill: 'none', stroke: style.color, 'stroke-width': key === 'actual' ? 2 : 1.7, 'stroke-dasharray': style.dash, 'stroke-linejoin': 'round' });
+    });
+    const hit = el('rect', { x: L, y: T, width: width - L - R, height: height - T - B, fill: 'transparent' });
+    const cross = el('line', { y1: T, y2: height - B, stroke: '#111', 'stroke-width': 1, opacity: 0 });
+    hit.addEventListener('pointermove', (ev) => {
+      const r = svg.getBoundingClientRect();
+      const i = Math.max(0, Math.min(n - 1, Math.round(((ev.clientX - r.left) - L) / (width - L - R) * (n - 1))));
+      cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i)); cross.setAttribute('opacity', 0.5);
+      const rows = s.resKeys.map((key, k) => { const st = resStyle(key, k); const v = P[i].res[key];
+        return `<div class="tip-row"><span class="swatch" style="background:${st.color}"></span>${st.label}<b>${v == null ? '–' : gw(v)}</b></div>`; }).join('');
+      tip.innerHTML = `<div class="tip-head">${fmt(new Date(P[i].t))}</div>${rows}<div class="tip-foot">GW · solar + wind + biomass & hydro</div>`;
+      placeTip(ev);
+    });
+    hit.addEventListener('pointerleave', () => { cross.setAttribute('opacity', 0); tip.hidden = true; });
+  }
+
   function drawLegend() {
     legend.replaceChildren();
+    if (view === 'res') {
+      s.resKeys.forEach((key, k) => {
+        const st = resStyle(key, k); const item = document.createElement('span'); item.className = 'legend-item';
+        item.innerHTML = `<span class="legend-line" style="background:${st.color}${st.dash !== 'none' ? ';opacity:.8' : ''}"></span>${st.label}${st.dash !== 'none' ? ' (dashed)' : ''}`;
+        legend.append(item);
+      });
+      note.textContent = 'Solar + wind + biomass & hydro. SMARD forecasts wind & solar only; biomass & hydro added from the day before';
+      return;
+    }
     const items = CATS.map((c) => [c.label, c.color]);
     if (view === 'mix') items.push(['Forecast: all other', COLOR.other_all]);
     items.forEach(([label, color]) => {
@@ -242,7 +299,7 @@
     if (wrap.clientWidth < 80 || wrap.clientHeight < 80) return; // not laid out yet (e.g. hidden tab)
     tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.view === view)));
     panel.classList.toggle('is-merit', view === 'merit');
-    (view === 'mix' ? drawMix : drawMerit)();
+    ({ mix: drawMix, merit: drawMerit, res: drawRes })[view]();
     drawLegend();
   }
 
