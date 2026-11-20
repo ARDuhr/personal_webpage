@@ -12,7 +12,7 @@
   const COLOR = {
     level_seasonality_trend_weather_ext_holidays: '#a6611a',
     level_seasonality_trend_weather_holidays: '#6b3fa0', level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5',
-    smard_day_ahead: '#0c7d5a', seasonal_naive_1w: '#b4b4ae' };
+    smard_day_ahead: '#5f5f5a', seasonal_naive_1w: '#b4b4ae' };
   const BENCHMARKS = new Set(['smard_day_ahead', 'seasonal_naive_1w']); // drawn dashed
   const COLORS = ['#c2185b', '#5d6d7e', '#0097a7'];
   const NAIVE = 'seasonal_naive_1w';
