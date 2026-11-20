@@ -2,10 +2,14 @@
   const SNAPSHOT_URL = 'data/demand-dashboard.json?v=48h-timestamp';
   const HOUR = 3600e3, DAY = 24 * HOUR, STEP = 15 * 60e3;
   // Most complex first; the benchmark last, in light grey. Unknown future models go in between.
-  const LABELS = { level_seasonality_trend_weather: 'Level Seasonality Trend + Weather' };
-  const ORDER = ['level_seasonality_trend_weather', 'level_seasonality_trend', 'seasonal_naive_1w'];
-  const COLOR = { level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5', seasonal_naive_1w: '#b4b4ae' };
-  const COLORS = ['#6b3fa0', '#0c7d5a', '#a6611a'];
+  const LABELS = {
+    level_seasonality_trend_weather_holidays: 'Level Seasonality Trend + Weather + Holidays',
+    level_seasonality_trend_weather: 'Level Seasonality Trend + Weather',
+  };
+  const ORDER = ['level_seasonality_trend_weather_holidays', 'level_seasonality_trend_weather', 'level_seasonality_trend', 'seasonal_naive_1w'];
+  const COLOR = {
+    level_seasonality_trend_weather_holidays: '#6b3fa0', level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5', seasonal_naive_1w: '#b4b4ae' };
+  const COLORS = ['#0c7d5a', '#a6611a', '#c2185b'];
   const NAIVE = 'seasonal_naive_1w';
   const ns = 'http://www.w3.org/2000/svg';
 

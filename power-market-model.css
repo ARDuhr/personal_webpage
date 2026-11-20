@@ -66,3 +66,4 @@
 .model-table .legend-line { display: inline-block; width: 17px; height: 2px; }
 @media (max-width: 600px) { #demand-panel .chart-wrap { height: 320px; } #demand-panel .moment-label { min-width: 0; } .demand-toolbar .view-tabs { min-width: 100%; } }
 .chart-tip .tip-row b { white-space: nowrap; }
+.model-table td:first-child { white-space: normal; }
