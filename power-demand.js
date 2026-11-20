@@ -1,7 +1,11 @@
 (() => {
   const SNAPSHOT_URL = 'data/demand-dashboard.json?v=48h-timestamp';
   const HOUR = 3600e3, DAY = 24 * HOUR, STEP = 15 * 60e3;
-  const COLORS = ['#d64027', '#1b69a5', '#6b3fa0', '#0c7d5a', '#a6611a'];
+  // Most complex first; the benchmark last, in light grey. Unknown future models go in between.
+  const LABELS = { level_seasonality_trend_weather: 'Level Seasonality Trend + Weather' };
+  const ORDER = ['level_seasonality_trend_weather', 'level_seasonality_trend', 'seasonal_naive_1w'];
+  const COLOR = { level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5', seasonal_naive_1w: '#b4b4ae' };
+  const COLORS = ['#6b3fa0', '#0c7d5a', '#a6611a'];
   const NAIVE = 'seasonal_naive_1w';
   const ns = 'http://www.w3.org/2000/svg';
 
@@ -50,7 +54,7 @@
     actual = { start, values, end: start + lastIndex * STEP };
 
     models = Object.entries(data.forecasts || {}).map(([key, points]) => ({
-      key, label: label(key), map: new Map(points.map((p) => [Date.parse(p.timestamp), p.load_mw])),
+      key, label: LABELS[key] || label(key), map: new Map(points.map((p) => [Date.parse(p.timestamp), p.load_mw])),
     }));
     // Benchmark: the same quarter-hour one week earlier.
     const firstModelTime = Math.min(...models.flatMap((m) => [...m.map.keys()]), actual.end - 28 * DAY);
@@ -61,9 +65,12 @@
     }
     models.push({ key: NAIVE, label: 'Seasonal Naive (1 Week)', map: naive, dashed: true });
 
-    models.forEach((m, i) => {
+    const rank = (key) => (ORDER.includes(key) ? ORDER.indexOf(key) : ORDER.length - 1.5);
+    models.sort((a, b) => rank(a.key) - rank(b.key));
+    let extra = 0;
+    models.forEach((m) => {
       const times = [...m.map.keys()].sort((a, b) => a - b);
-      m.color = COLORS[i % COLORS.length];
+      m.color = COLOR[m.key] || COLORS[extra++ % COLORS.length];
       m.first = times[0];
       m.last = times.at(-1);
       m.selected = true;
@@ -212,7 +219,7 @@
       });
       return d;
     };
-    series.forEach(({ m, pts }) => svg.append(el('path', {
+    [...series].reverse().forEach(({ m, pts }) => svg.append(el('path', {
       d: path(pts), fill: 'none', stroke: m.color, 'stroke-width': 1.6, 'stroke-dasharray': m.dashed ? '5 4' : 'none',
     })));
     svg.append(el('path', { d: path(actualPts), fill: 'none', stroke: '#111', 'stroke-width': 1.6 }));
@@ -243,7 +250,7 @@
     hit.addEventListener('pointerleave', () => { cross.setAttribute('opacity', 0); tip.hidden = true; });
 
     legend.innerHTML = '<span class="legend-item"><span class="legend-line" style="--line:#111"></span>Actual demand</span>'
-      + shown.map((m) => `<span class="legend-item"><span class="legend-line${m.dashed ? ' is-dashed' : ''}" style="--line:${m.color}"></span>${m.label}</span>`).join('')
+      // Forecasts are keyed in the table below the chart.
       + '<span class="legend-item"><span class="legend-shade"></span>Forecast period</span>';
   }
 
