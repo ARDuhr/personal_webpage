@@ -94,7 +94,7 @@
       const name = document.createElement('td');
       name.innerHTML = `<label class="model-choice"><input type="checkbox" ${m.selected ? 'checked' : ''} />`
         + `<span class="legend-line${m.dashed ? ' is-dashed' : ''}" style="--line:${m.color}"></span>${m.label}</label>`;
-      name.querySelector('input').addEventListener('change', (e) => { m.selected = e.target.checked; updateSlider(true); draw(); });
+      name.querySelector('input').addEventListener('change', (e) => { m.selected = e.target.checked; updateSlider(); draw(); });
       row.append(name);
       if (!s) { cell('–'); cell('–'); cell('–'); cell('–'); cell('–'); cell('0'); }
       else {
@@ -105,17 +105,16 @@
     });
   }
 
-  // Window: [end - days, end]. The slider moves the end back from the last forecast in 1-hour steps.
+  // Window: [end - days, end]. By default the last actual sits in the middle; the slider pans
+  // in 1-hour steps between the earliest stored forecast and the last forecast.
   const selectedModels = () => models.filter((m) => m.selected);
-  const maxEnd = () => Math.max(actual.end, ...selectedModels().map((m) => m.last));
-  // Pan back as far as the earliest stored forecast (about four weeks).
+  const centredEnd = () => actual.end + (days * DAY) / 2;
+  const maxEnd = () => Math.max(centredEnd(), ...selectedModels().map((m) => m.last));
   const panStart = () => Math.max(actual.start, Math.min(actual.end - 28 * DAY, ...selectedModels().map((m) => m.first)));
-  const minEnd = () => Math.min(panStart() + days * DAY, maxEnd());
-  function updateSlider(keepAtEnd) {
-    const steps = Math.max(0, Math.floor((maxEnd() - minEnd()) / HOUR));
-    const atEnd = Number(slider.value) === Number(slider.max);
-    slider.max = steps;
-    if (keepAtEnd || atEnd) slider.value = steps;
+  const minEnd = () => Math.min(panStart() + days * DAY, centredEnd());
+  function updateSlider() {
+    slider.max = Math.max(0, Math.round((maxEnd() - minEnd()) / HOUR));
+    slider.value = Math.round((centredEnd() - minEnd()) / HOUR);
   }
   const windowEnd = () => maxEnd() - (Number(slider.max) - Number(slider.value)) * HOUR;
 
@@ -231,7 +230,7 @@
   tabs.forEach((tab) => tab.addEventListener('click', () => {
     days = Number(tab.dataset.days);
     tabs.forEach((t) => t.setAttribute('aria-pressed', String(t === tab)));
-    updateSlider(true);
+    updateSlider();
     draw();
   }));
   slider.addEventListener('input', draw);
@@ -243,7 +242,7 @@
       if (!data.actuals?.values_mw?.length) throw new Error('The snapshot contains no demand data.');
       prepare(data);
       buildTable();
-      updateSlider(true);
+      updateSlider();
       draw();
       document.querySelector('#updated-on').textContent = `LAST UPDATED: ${fmt(Date.parse(data.generated_at), false)} ${new Date(data.generated_at).getUTCFullYear()}`;
     })
