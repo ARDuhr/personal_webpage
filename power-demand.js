@@ -3,16 +3,18 @@
   const HOUR = 3600e3, DAY = 24 * HOUR, STEP = 15 * 60e3;
   // Most complex first; the benchmark last, in light grey. Unknown future models go in between.
   const LABELS = {
+    level_seasonality_trend_weather_ext_holidays: 'Level Seasonality Trend + Extended Weather + Holidays',
     level_seasonality_trend_weather_holidays: 'Level Seasonality Trend + Weather + Holidays',
     level_seasonality_trend_weather: 'Level Seasonality Trend + Weather',
     smard_day_ahead: 'SMARD Day-Ahead (TSOs)',
   };
-  const ORDER = ['level_seasonality_trend_weather_holidays', 'level_seasonality_trend_weather', 'level_seasonality_trend', 'smard_day_ahead', 'seasonal_naive_1w'];
+  const ORDER = ['level_seasonality_trend_weather_ext_holidays', 'level_seasonality_trend_weather_holidays', 'level_seasonality_trend_weather', 'level_seasonality_trend', 'smard_day_ahead', 'seasonal_naive_1w'];
   const COLOR = {
+    level_seasonality_trend_weather_ext_holidays: '#a6611a',
     level_seasonality_trend_weather_holidays: '#6b3fa0', level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5',
     smard_day_ahead: '#0c7d5a', seasonal_naive_1w: '#b4b4ae' };
   const BENCHMARKS = new Set(['smard_day_ahead', 'seasonal_naive_1w']); // drawn dashed
-  const COLORS = ['#a6611a', '#c2185b', '#5d6d7e'];
+  const COLORS = ['#c2185b', '#5d6d7e', '#0097a7'];
   const NAIVE = 'seasonal_naive_1w';
   const ns = 'http://www.w3.org/2000/svg';
 
