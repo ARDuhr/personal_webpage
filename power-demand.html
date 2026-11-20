@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="German power demand: actuals and model forecasts." />
+    <title>Power Demand — Arthur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=2026-11-19c" />
+    <link rel="stylesheet" href="power-market-model.css?v=2026-11-19c" />
+  </head>
+  <body>
+    <div class="custom-cursor" aria-hidden="true"></div>
+    <main class="page-shell model-page">
+      <header class="site-header model-header">
+        <a class="back-link" href="./">←&nbsp; Back to main page</a>
+        <p class="header-note" id="updated-on">LAST UPDATED: —</p>
+      </header>
+
+      <section class="model-intro" aria-labelledby="page-title">
+        <h1 id="page-title">Power<br />demand</h1>
+      </section>
+
+      <section class="chart-grid chart-grid--single" aria-label="Power demand chart">
+        <article class="chart-panel" id="demand-panel">
+          <div class="demand-toolbar">
+            <p class="eyebrow">GERMANY / GW / 15-MIN / UTC</p>
+            <div class="view-tabs" role="group" aria-label="Timeframe">
+              <button type="button" data-days="14" aria-pressed="false">2 WEEKS</button>
+              <button type="button" data-days="7" aria-pressed="false">1 WEEK</button>
+              <button type="button" data-days="2" aria-pressed="true">2 DAYS</button>
+              <button type="button" data-days="1" aria-pressed="false">1 DAY</button>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-loading" id="chart-status">Loading demand data…</div>
+            <svg id="demand-chart" role="img" aria-label="German power demand: actuals and selected forecasts"></svg>
+            <div class="chart-tip" hidden></div>
+          </div>
+          <label class="moment">
+            <span class="moment-label" id="window-label">—</span>
+            <input type="range" id="window-slider" min="0" max="0" step="1" value="0" aria-label="Move the time window" />
+          </label>
+          <div class="legend" id="demand-legend" aria-label="Chart legend"></div>
+          <div class="table-scroll">
+            <table class="model-table" id="model-table">
+              <thead>
+                <tr>
+                  <th scope="col">Forecast</th>
+                  <th scope="col" title="Coefficient of determination">R²</th>
+                  <th scope="col" title="Mean absolute error">MAE</th>
+                  <th scope="col" title="Root mean squared error">RMSE</th>
+                  <th scope="col" title="Mean absolute percentage error">MAPE</th>
+                  <th scope="col" title="Mean forecast minus actual">Bias</th>
+                  <th scope="col" title="Intervals with both forecast and actual">N</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="supply-note" id="stats-note"></p>
+        </article>
+      </section>
+
+      <footer><span>© 2026 ARTHUR</span><span>SOURCE: BUNDESNETZAGENTUR | SMARD.DE</span></footer>
+    </main>
+    <script src="cursor.js?v=2026-11-19c"></script>
+    <script src="power-demand.js?v=2026-11-19c"></script>
+  </body>
+</html>

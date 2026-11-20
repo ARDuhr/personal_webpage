@@ -43,3 +43,26 @@
 #supply-panel .chart-wrap { min-height: 272px; }
 #supply-panel .chart-wrap svg { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; }
 @media (max-width: 600px) { #supply-panel .chart-wrap { min-height: 235px; } }
+.chart-grid--single { grid-template-columns: 1fr; }
+#demand-panel { min-height: 0; }
+.demand-toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; padding-bottom: 12px; }
+.demand-toolbar .eyebrow { margin: 0; font-size: .66rem; }
+.demand-toolbar .view-tabs { margin: 0; min-width: min(100%, 420px); }
+#demand-panel .chart-wrap { flex: none; height: clamp(340px, 56vh, 580px); min-height: 0; }
+#demand-panel .chart-wrap svg { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; }
+#demand-panel .moment { display: flex; }
+#demand-panel .moment-label { min-width: 230px; }
+.axis-text { fill: #777; font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: .03em; }
+.legend-line { background: var(--line); }
+.legend-line.is-dashed { background: repeating-linear-gradient(90deg, var(--line) 0 5px, transparent 5px 8px); }
+.legend-shade { width: 12px; height: 10px; border: 1px solid #d2d2ce; background: #efefeb; }
+.chart-tip i { margin-left: 6px; color: var(--grey); font-style: normal; }
+.table-scroll { overflow-x: auto; border-top: 1px solid #b8b8b4; }
+.model-table { width: 100%; border-collapse: collapse; font-family: "DM Mono", monospace; font-size: .68rem; letter-spacing: .025em; white-space: nowrap; }
+.model-table th { padding: 10px 10px 8px 0; color: var(--grey); font-size: .62rem; font-weight: 400; letter-spacing: .065em; text-align: right; text-transform: uppercase; }
+.model-table td { padding: 7px 10px 7px 0; border-top: 1px solid #e3e3df; text-align: right; font-variant-numeric: tabular-nums; }
+.model-table th:first-child, .model-table td:first-child { text-align: left; }
+.model-table .model-choice { margin: 0; }
+.model-table .legend-line { display: inline-block; width: 17px; height: 2px; }
+@media (max-width: 600px) { #demand-panel .chart-wrap { height: 320px; } #demand-panel .moment-label { min-width: 0; } .demand-toolbar .view-tabs { min-width: 100%; } }
+.chart-tip .tip-row b { white-space: nowrap; }
