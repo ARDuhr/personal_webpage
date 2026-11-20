@@ -68,13 +68,32 @@
       m.last = times.at(-1);
       m.selected = true;
     });
-    // Score every forecast on the same intervals (where all of them and the actual exist).
-    const common = [...models[0].map.keys()].filter((t) => t <= actual.end && Number.isFinite(actualAt(t))
-      && models.every((m) => m.map.has(t)));
-    models.forEach((m) => { m.stats = score(common.map((t) => [m.map.get(t), actualAt(t)])); });
+  }
+
+  // Score on the intervals where every ticked forecast and the actual exist, so the
+  // numbers are comparable. A forecast with no past intervals yet (a new model) does
+  // not narrow the window; untick a forecast with a short history to widen it.
+  function scoreModels() {
+    const scorable = (m) => [...m.map.keys()].some((t) => t <= actual.end && Number.isFinite(actualAt(t)));
+    const ticked = models.filter((m) => m.selected && scorable(m));
+    const base = ticked.length ? ticked : models.filter(scorable);
+    const common = base.length ? [...base[0].map.keys()].sort((a, b) => a - b)
+      .filter((t) => t <= actual.end && Number.isFinite(actualAt(t)) && base.every((m) => m.map.has(t))) : [];
+    models.forEach((m) => {
+      m.stats = common.length && common.every((t) => m.map.has(t))
+        ? score(common.map((t) => [m.map.get(t), actualAt(t)])) : null;
+    });
     statsNote.textContent = common.length
-      ? `ACCURACY OVER ${fmt(common[0], false)} – ${fmt(common.at(-1), false)} · SAME ${common.length.toLocaleString('en-GB')} INTERVALS FOR EVERY FORECAST · LATEST FORECAST ISSUED BEFORE EACH INTERVAL · BENCHMARK = SAME TIME ONE WEEK EARLIER`
+      ? `ACCURACY OVER ${fmt(common[0], false)} – ${fmt(common.at(-1), false)} · SAME ${common.length.toLocaleString('en-GB')} INTERVALS FOR EVERY TICKED FORECAST WITH PAST DATA (– = NO PAST FORECASTS YET) · LATEST FORECAST ISSUED BEFORE EACH INTERVAL · BENCHMARK = SAME TIME ONE WEEK EARLIER`
       : 'NO OVERLAP OF FORECASTS AND ACTUALS YET';
+    tbody.querySelectorAll('tr').forEach((row, i) => {
+      const st = models[i].stats;
+      const cells = [...row.children].slice(1);
+      const texts = st
+        ? [st.r2.toFixed(3), gw(st.mae), gw(st.rmse), `${st.mape.toFixed(1)}%`, `${st.bias >= 0 ? '+' : '−'}${gw(Math.abs(st.bias))}`, st.n.toLocaleString('en-GB')]
+        : ['–', '–', '–', '–', '–', '0'];
+      cells.forEach((td, j) => { td.textContent = texts[j]; });
+    });
   }
 
   function score(pairs) {
@@ -93,19 +112,14 @@
   function buildTable() {
     tbody.replaceChildren();
     models.forEach((m) => {
-      const s = m.stats;
       const row = document.createElement('tr');
       const cell = (text) => { const td = document.createElement('td'); td.textContent = text; row.append(td); };
       const name = document.createElement('td');
       name.innerHTML = `<label class="model-choice"><input type="checkbox" ${m.selected ? 'checked' : ''} />`
         + `<span class="legend-line${m.dashed ? ' is-dashed' : ''}" style="--line:${m.color}"></span>${m.label}</label>`;
-      name.querySelector('input').addEventListener('change', (e) => { m.selected = e.target.checked; updateSlider(); draw(); });
+      name.querySelector('input').addEventListener('change', (e) => { m.selected = e.target.checked; scoreModels(); updateSlider(); draw(); });
       row.append(name);
-      if (!s) { cell('–'); cell('–'); cell('–'); cell('–'); cell('–'); cell('0'); }
-      else {
-        cell(s.r2.toFixed(3)); cell(gw(s.mae)); cell(gw(s.rmse)); cell(`${s.mape.toFixed(1)}%`);
-        cell(`${s.bias >= 0 ? '+' : '−'}${gw(Math.abs(s.bias))}`); cell(s.n.toLocaleString('en-GB'));
-      }
+      for (let j = 0; j < 6; j += 1) cell('–');
       tbody.append(row);
     });
   }
@@ -128,6 +142,7 @@
   }
 
   function draw() {
+    if (!actual) return; // data not loaded yet
     const { w, h } = size();
     if (w < 80 || h < 80) return;
     lastSize = `${w}x${h}`;
@@ -247,6 +262,7 @@
       if (!data.actuals?.values_mw?.length) throw new Error('The snapshot contains no demand data.');
       prepare(data);
       buildTable();
+      scoreModels();
       updateSlider();
       draw();
       document.querySelector('#updated-on').textContent = `LAST UPDATED: ${fmt(Date.parse(data.generated_at), false)} ${new Date(data.generated_at).getUTCFullYear()}`;
