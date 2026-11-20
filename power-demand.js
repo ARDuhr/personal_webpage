@@ -28,9 +28,14 @@
     return node;
   };
   const gw = (mw) => `${(mw / 1000).toFixed(1)} GW`;
-  const fmt = (t, withTime = true) => new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit', month: 'short', ...(withTime ? { hour: '2-digit', minute: '2-digit', hour12: false } : {}), timeZone: 'UTC',
-  }).format(new Date(t)).replace(',', '').toUpperCase();
+  // Built from parts so every browser gives "19 NOV 11:00" (Safari would insert "at").
+  const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const fmt = (t, withTime = true) => {
+    const d = new Date(t);
+    const date = `${pad2(d.getUTCDate())} ${MONTHS[d.getUTCMonth()]}`;
+    return withTime ? `${date} ${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}` : date;
+  };
   const label = (key) => key.replaceAll('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   const actualAt = (t) => {
     const i = Math.round((t - actual.start) / STEP);
