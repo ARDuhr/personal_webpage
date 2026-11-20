@@ -5,11 +5,14 @@
   const LABELS = {
     level_seasonality_trend_weather_holidays: 'Level Seasonality Trend + Weather + Holidays',
     level_seasonality_trend_weather: 'Level Seasonality Trend + Weather',
+    smard_day_ahead: 'SMARD Day-Ahead (TSOs)',
   };
-  const ORDER = ['level_seasonality_trend_weather_holidays', 'level_seasonality_trend_weather', 'level_seasonality_trend', 'seasonal_naive_1w'];
+  const ORDER = ['level_seasonality_trend_weather_holidays', 'level_seasonality_trend_weather', 'level_seasonality_trend', 'smard_day_ahead', 'seasonal_naive_1w'];
   const COLOR = {
-    level_seasonality_trend_weather_holidays: '#6b3fa0', level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5', seasonal_naive_1w: '#b4b4ae' };
-  const COLORS = ['#0c7d5a', '#a6611a', '#c2185b'];
+    level_seasonality_trend_weather_holidays: '#6b3fa0', level_seasonality_trend_weather: '#d64027', level_seasonality_trend: '#1b69a5',
+    smard_day_ahead: '#0c7d5a', seasonal_naive_1w: '#b4b4ae' };
+  const BENCHMARKS = new Set(['smard_day_ahead', 'seasonal_naive_1w']); // drawn dashed
+  const COLORS = ['#a6611a', '#c2185b', '#5d6d7e'];
   const NAIVE = 'seasonal_naive_1w';
   const ns = 'http://www.w3.org/2000/svg';
 
@@ -75,6 +78,7 @@
     models.forEach((m) => {
       const times = [...m.map.keys()].sort((a, b) => a - b);
       m.color = COLOR[m.key] || COLORS[extra++ % COLORS.length];
+      m.dashed = BENCHMARKS.has(m.key);
       m.first = times[0];
       m.last = times.at(-1);
       m.selected = true;
@@ -95,7 +99,7 @@
         ? score(common.map((t) => [m.map.get(t), actualAt(t)])) : null;
     });
     statsNote.textContent = common.length
-      ? `ACCURACY OVER ${fmt(common[0], false)} – ${fmt(common.at(-1), false)} · SAME ${common.length.toLocaleString('en-GB')} INTERVALS FOR EVERY TICKED FORECAST WITH PAST DATA (– = NO PAST FORECASTS YET) · LATEST FORECAST ISSUED BEFORE EACH INTERVAL · BENCHMARK = SAME TIME ONE WEEK EARLIER`
+      ? `ACCURACY OVER ${fmt(common[0], false)} – ${fmt(common.at(-1), false)} · SAME ${common.length.toLocaleString('en-GB')} INTERVALS FOR EVERY TICKED FORECAST WITH PAST DATA (– = NO PAST FORECASTS YET) · LATEST FORECAST ISSUED BEFORE EACH INTERVAL · SEASONAL NAIVE = SAME TIME ONE WEEK EARLIER · SMARD = DAY-AHEAD LOAD FORECAST OF THE GERMAN TSOS`
       : 'NO OVERLAP OF FORECASTS AND ACTUALS YET';
     tbody.querySelectorAll('tr').forEach((row, i) => {
       const st = models[i].stats;
